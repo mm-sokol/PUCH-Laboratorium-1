@@ -18,18 +18,22 @@
 #### b. Konfiguracja projketu
 - tworzenie grupy zasobów
   kontenera grupującego zasoby odpowiadające jednemu środowisku
+
   ![alt text](screens1/image-17.png)
 
 - nazwanie bazy danych
+
   ![alt text](screens1/image-18.png)
 
 #### c. Konfiguracja serwera
 
-- utworzenie serwera
+- utworzenie serwera 
+
   ![alt text](screens/image-6.png)
 
 - określenie metody uwierzytelniania
   SQL, Microsoft Entra lub obie możliwości
+  
   ![alt text](screens1/image-19.png)
 
 #### e. Wybór opcji cenowych i rozmiaru
@@ -37,7 +41,7 @@
 
   ![alt text](screens1/image-20.png)
   ![alt text](screens1/image-21.png)
-  
+
   Opcje liczby rdzeni i maksymalnej pamięci zostały pozostawione jako defaultowe
   ![alt text](screens1/image-22.png)
 
