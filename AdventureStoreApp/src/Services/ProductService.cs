@@ -4,6 +4,7 @@ using AdventureStoreApp.src.DTO;
 using AdventureStoreApp.src.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Security.AccessControl;
 
 
 
@@ -11,7 +12,9 @@ namespace AdventureStoreApp.src.Services
 {
     public interface IProductService
     {
-        Task<List<ProductDto>> GetAllProducts(); // Define your DTO as necessary
+        Task<List<ProductDto>> GetAllProducts();
+
+        Task<ProductDto> GetProductById(int id);
     }
 
     public class ProductService : IProductService
@@ -41,6 +44,25 @@ namespace AdventureStoreApp.src.Services
                     ModifiedDate = p.ModifiedDate
                 })
                 .ToList();
+        }
+
+        public async Task<ProductDto> GetProductById(int id) 
+        {
+            var p = await _context.Products.FindAsync(id);
+            if (p == null) return null;
+            return new ProductDto{
+                    ProductID = p.ProductID,
+                    ProductNumber = p.ProductNumber,
+                    Name = p.Name,
+                    StandardCost = p.StandardCost,
+                    ListPrice = p.ListPrice,
+                    Color = p.Color,
+                    Size = p.Size,
+                    Weight = p.Weight,
+                    SellStartDate = p.SellStartDate,
+                    ModifiedDate = p.ModifiedDate
+            };
+
         }
     }
 }

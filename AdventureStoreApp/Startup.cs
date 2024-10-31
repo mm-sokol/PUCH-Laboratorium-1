@@ -26,12 +26,12 @@ namespace AdventureStoreApp
             
             services.AddScoped<IProductService, ProductService>();
 
-            services.AddControllersWithViews()
-            .AddRazorOptions(options =>
-            {
-                options.ViewLocationFormats.Add("/src/Views/{1}/{0}.cshtml");
-                options.ViewLocationFormats.Add("src/Views/{1}/{0}.cshtml");
-            });
+            services.AddControllersWithViews();
+            // .AddRazorOptions(options =>
+            // {
+            //     options.ViewLocationFormats.Add("/src/Views/{1}/{0}.cshtml");
+            //     options.ViewLocationFormats.Add("src/Views/{1}/{0}.cshtml");
+            // });
 
         }
 
@@ -56,11 +56,19 @@ namespace AdventureStoreApp
 
             app.UseEndpoints(endpoints =>
             {
-                // endpoints.MapControllers();
+                endpoints.MapControllers();
+                
+                endpoints.MapControllerRoute(
+                    name: "products",
+                    pattern: "Products",
+                    defaults: new { controller = "Products", action = "Index" }
+                );
+
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Products}/{action=Index}/{id?}");
-                });
+                    pattern: "{controller=Products}/{action=Details}/{id?}");
+            });
+
         }
     }
 }
