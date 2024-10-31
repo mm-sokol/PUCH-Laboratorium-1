@@ -34,8 +34,10 @@
 
 #### e. Wybór opcji cenowych i rozmiaru
 - Konfiguracja bazy danych
+
   ![alt text](screens1/image-20.png)
   ![alt text](screens1/image-21.png)
+  
   Opcje liczby rdzeni i maksymalnej pamięci zostały pozostawione jako defaultowe
   ![alt text](screens1/image-22.png)
 
@@ -44,18 +46,30 @@
 #### f. Dodatkowe ustawienia
 ###### Ustawienia sieci
 - Łączność sieciowa została ustwiona na: Publiczny punkt końcowy
+
   ![alt text](screens1/image-24.png)
+
 - Reguły zapory sieciowej skonfigurowano tak, aby możliwy był dostęp z aktualnego IP
+
   ![alt text](screens1/image-25.png)
+
 - Zasady połączenia pozostały domyślne
+
   ![alt text](screens1/image-26.png)
+
 - Połączenia szyfrowane pozostały na domyślnej minimalnej wersji protokołu TLS 1.2
+
   ![alt text](screens1/image-27.png)
 ###### Zabezpieczenia
+
  ![alt text](screens1/image-28.png)
+
 - Rejestr kryptograficzny
+
   ![alt text](screens1/image-30.png)
+
   ![alt text](screens1/image-29.png)
+
 - Magazyn skrótów
   ![alt text](screens1/image-31.png)
 
