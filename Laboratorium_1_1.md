@@ -131,6 +131,7 @@ dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.0
 Server=tcp:puch.database.windows.net,1433;Initial Catalog=puch_db;Persist Security Info=False;User ID=puchlab;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;s
 ``` 
 5. Dodanie parametrów do pliku ```appsettings.json```
+6. 
 
 
 
