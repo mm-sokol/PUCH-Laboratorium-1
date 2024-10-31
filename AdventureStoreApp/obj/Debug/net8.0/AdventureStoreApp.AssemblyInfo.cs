@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AdventureStoreApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5b6e795d4f87f2b873b4ca0fa7e151beee65f1ca")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9d2f613adfd191dec699f77cba1e9ef02e847266")]
 [assembly: System.Reflection.AssemblyProductAttribute("AdventureStoreApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AdventureStoreApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

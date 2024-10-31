@@ -1,0 +1,39 @@
+@model IEnumerable<AdventureStoreApp.src.DTO.ProductDTO>
+
+@{
+    ViewData["Title"] = "Lista Produktów";
+}
+
+<h1>Lista Produktów</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Numer Produktu</th>
+            <th>Nazwa</th>
+            <th>Kolor</th>
+            <th>Wielkość</th>
+            <th>Cena Standardowa</th>
+            <th>Cena</th>
+            <th>Data Rozpoczęcia Sprzedaży</th>
+            <th>Data Modyfikacji</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.ProductID</td>
+                <td>@product.ProductNumber</td>
+                <td>@product.Name</td>
+                <td>@product.Color</td>
+                <td>@product.Size</td>
+                <td>@product.StandardCost</td>
+                <td>@product.ListPrice</td>
+                <td>@product.SellStartDate.ToString("yyyy-MM-dd")</td>
+                <td>@product.ModifiedDate.ToString("yyyy-MM-dd")</td>
+            </tr>
+        }
+    </tbody>
+</table>

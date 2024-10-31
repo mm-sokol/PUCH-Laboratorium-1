@@ -1,8 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
-namespace AdventureStoreApp.Models
+namespace AdventureStoreApp.src.Models
 {
     public class Customer
     {
@@ -34,10 +35,9 @@ namespace AdventureStoreApp.Models
         public string SalesPerson { get; set; }
 
         [MaxLength(50)]
-        [Index(IsUnique = true)]
         public string EmailAddress { get; set; }
 
-        public Phone Phone { get; set; }
+        public string Phone { get; set; }
 
         [Required]
         [MaxLength(128)]
@@ -52,12 +52,15 @@ namespace AdventureStoreApp.Models
 
         [Required]
         public DateTime ModifiedDate { get; set; } = DateTime.UtcNow;
+
+
+        public string Name { get; set; }
+
+        public virtual ICollection<CustomerAddress> CustomerAddresses { get; set; } = new List<CustomerAddress>();
     }
 
-    // Assuming NameStyle and Phone are defined elsewhere in your project
     public enum NameStyle
     {
-        // Define the possible values for NameStyle
         Individual = 0,
         Company = 1
     }

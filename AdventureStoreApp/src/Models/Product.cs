@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AdventureStoreApp.Models
+namespace AdventureStoreApp.src.Models
 {
     public class Product
     {
@@ -11,7 +11,7 @@ namespace AdventureStoreApp.Models
         public int ProductID { get; set; }
 
         [Required]
-        public Name Name { get; set; } // Assuming Name is defined elsewhere
+        public string Name { get; set; }
 
         [Required]
         [MaxLength(25)]
@@ -57,10 +57,10 @@ namespace AdventureStoreApp.Models
         public DateTime ModifiedDate { get; set; } = DateTime.UtcNow; // Default value of getdate()
     }
 
-    // Assuming Name is defined elsewhere in your project
-    public class Name
-    {
-        // Define properties for Name if needed
-        public string Value { get; set; }
-    }
+    // // Assuming Name is defined elsewhere in your project
+    // public class Name
+    // {
+    //     // Define properties for Name if needed
+    //     public string Value { get; set; }
+    // }
 }

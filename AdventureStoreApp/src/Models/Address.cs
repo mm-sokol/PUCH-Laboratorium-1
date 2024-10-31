@@ -1,8 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
-namespace AdventureStoreApp.Models
+namespace AdventureStoreApp.src.Models
 {
     public class Address
     {
@@ -22,10 +23,10 @@ namespace AdventureStoreApp.Models
         public string City { get; set; }
 
         [Required]
-        public Name StateProvince { get; set; }
+        public string StateProvince { get; set; }
 
         [Required]
-        public Name CountryRegion { get; set; }
+        public string CountryRegion { get; set; }
 
         [Required]
         [MaxLength(15)]
@@ -36,12 +37,7 @@ namespace AdventureStoreApp.Models
 
         [Required]
         public DateTime ModifiedDate { get; set; } = DateTime.UtcNow;
-    }
 
-    // Assuming Name is defined elsewhere in your project
-    public class Name
-    {
-        // Define properties for Name if needed
-        public string Value { get; set; }
+        public virtual ICollection<CustomerAddress> CustomerAddresses { get; set; } = new List<CustomerAddress>();
     }
 }

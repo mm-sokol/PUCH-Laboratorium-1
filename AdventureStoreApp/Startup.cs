@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using AdventureStoreApp.src.Data;
+using AdventureStoreApp.src.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace AdventureStoreApp
 {
@@ -23,8 +24,15 @@ namespace AdventureStoreApp
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("AzureSqlDb")));
             
-            // Rejestracja innych serwisów...
-            services.AddControllers(); // Dodanie wsparcia dla kontrolerów
+            services.AddScoped<IProductService, ProductService>();
+
+            services.AddControllersWithViews()
+            .AddRazorOptions(options =>
+            {
+                options.ViewLocationFormats.Add("/src/Views/{1}/{0}.cshtml");
+                options.ViewLocationFormats.Add("src/Views/{1}/{0}.cshtml");
+            });
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -35,7 +43,7 @@ namespace AdventureStoreApp
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 
@@ -48,8 +56,11 @@ namespace AdventureStoreApp
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers(); // Mapowanie kontrolerów
-            });
+                // endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Products}/{action=Index}/{id?}");
+                });
         }
     }
 }

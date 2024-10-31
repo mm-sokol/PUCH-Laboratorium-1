@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using AdventureStoreApp.src.Models;
 
 namespace AdventureStoreApp.src.Data
 {
@@ -12,6 +14,11 @@ namespace AdventureStoreApp.src.Data
         public DbSet<Address> Addresses { get; set; }
         public DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductCategory> ProductCategories { get; set; }
+        public DbSet<ProductModel> ProductModels { get; set; }
+        public DbSet<ProductModelProductDescription> ProductModelProductDescroptions { get; set; }
+        public DbSet<SalesOrderDetail> SalesOrderDetails { get; set; }
+        public DbSet<SalesOrderHeader> SalesOrderHeaders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +44,8 @@ namespace AdventureStoreApp.src.Data
                 entity.Property(c => c.ModifiedDate)
                     .HasDefaultValueSql("getdate()");
 
+                // entity.OwnsOne(c => c.Phone);
+
             });
 
             // CustomerAddress
@@ -54,11 +63,11 @@ namespace AdventureStoreApp.src.Data
                 
                 // Relacje
                 entity.HasOne<Customer>()
-                    .WithMany()
+                    .WithMany(c => c.CustomerAddresses)
                     .HasForeignKey(ca => ca.CustomerID);
 
-                entity.HasOne<Address>()
-                    .WithMany()
+                entity.HasOne<Address>(ca => ca.Address)
+                    .WithMany(a => a.CustomerAddresses)
                     .HasForeignKey(ca => ca.AddressID);
             });
 
@@ -210,24 +219,29 @@ namespace AdventureStoreApp.src.Data
 
             modelBuilder.Entity<SalesOrderDetail>(entity =>
             {
-                entity.ToTable("SalesOrderDetail", "SalesLT");
+                entity.ToTable("SalesOrderDetail", "SalesLT", t=>{
+                    t.HasCheckConstraint("CK_SalesOrderDetail_OrderQty", "[OrderQty] > 0");
+                    t.HasCheckConstraint("CK_SalesOrderDetail_UnitPrice", "[UnitPrice] >= 0.00");
+                    t.HasCheckConstraint("CK_SalesOrderDetail_UnitPriceDiscount", "[UnitPriceDiscount] >= 0.00");
+
+                });
 
                 entity.HasKey(sd => new { sd.SalesOrderID, sd.SalesOrderDetailID });
 
                 entity.Property(sd => sd.OrderQty)
-                    .IsRequired()
-                    .HasCheckConstraint("CK_SalesOrderDetail_OrderQty", "[OrderQty] > 0");
+                    .IsRequired();
+                
 
                 entity.Property(sd => sd.UnitPrice)
                     .IsRequired()
-                    .HasColumnType("money")
-                    .HasCheckConstraint("CK_SalesOrderDetail_UnitPrice", "[UnitPrice] >= 0.00");
+                    .HasColumnType("money");
+
 
                 entity.Property(sd => sd.UnitPriceDiscount)
                     .IsRequired()
                     .HasColumnType("money")
-                    .HasDefaultValue(0.0m)
-                    .HasCheckConstraint("CK_SalesOrderDetail_UnitPriceDiscount", "[UnitPriceDiscount] >= 0.00");
+                    .HasDefaultValue(0.0m);
+
 
                 entity.Property(sd => sd.rowguid)
                     .HasDefaultValueSql("newid()");
@@ -249,7 +263,15 @@ namespace AdventureStoreApp.src.Data
 
             modelBuilder.Entity<SalesOrderHeader>(entity =>
             {
-                entity.ToTable("SalesOrderHeader", "SalesLT");
+                entity.ToTable("SalesOrderHeader", "SalesLT", t=>{
+                    // Ograniczenia
+                    t.HasCheckConstraint("CK_SalesOrderHeader_DueDate", "[DueDate] >= [OrderDate]");
+                    t.HasCheckConstraint("CK_SalesOrderHeader_Freight", "[Freight] >= 0.00");
+                    t.HasCheckConstraint("CK_SalesOrderHeader_ShipDate", "([ShipDate] >= [OrderDate] OR [ShipDate] IS NULL)");
+                    t.HasCheckConstraint("CK_SalesOrderHeader_Status", "([Status] >= 0 AND [Status] <= 8)");
+                    t.HasCheckConstraint("CK_SalesOrderHeader_SubTotal", "[SubTotal] >= 0.00");
+                    t.HasCheckConstraint("CK_SalesOrderHeader_TaxAmt", "[TaxAmt] >= 0.00");
+                });
 
                 entity.HasKey(so => so.SalesOrderID);
 
@@ -308,13 +330,6 @@ namespace AdventureStoreApp.src.Data
                     .HasForeignKey(so => so.CustomerID)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                // Ograniczenia
-                entity.HasCheckConstraint("CK_SalesOrderHeader_DueDate", "[DueDate] >= [OrderDate]");
-                entity.HasCheckConstraint("CK_SalesOrderHeader_Freight", "[Freight] >= 0.00");
-                entity.HasCheckConstraint("CK_SalesOrderHeader_ShipDate", "([ShipDate] >= [OrderDate] OR [ShipDate] IS NULL)");
-                entity.HasCheckConstraint("CK_SalesOrderHeader_Status", "([Status] >= 0 AND [Status] <= 8)");
-                entity.HasCheckConstraint("CK_SalesOrderHeader_SubTotal", "[SubTotal] >= 0.00");
-                entity.HasCheckConstraint("CK_SalesOrderHeader_TaxAmt", "[TaxAmt] >= 0.00");
             });
         }
     }

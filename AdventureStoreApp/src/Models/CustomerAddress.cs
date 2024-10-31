@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AdventureStoreApp.Models
+namespace AdventureStoreApp.src.Models
 {
     public class CustomerAddress
     {
@@ -13,7 +13,7 @@ namespace AdventureStoreApp.Models
         public int AddressID { get; set; }
 
         [Required]
-        public Name AddressType { get; set; }
+        public AddressType AddressType { get; set; }
 
         [Required]
         public Guid rowguid { get; set; } // Use Guid for uniqueidentifier
@@ -26,10 +26,14 @@ namespace AdventureStoreApp.Models
         public virtual Address Address { get; set; }
     }
 
-    // Assuming Name is defined elsewhere in your project
-    public class Name
+    public enum AddressType
     {
-        // Define properties for Name if needed
-        public string Value { get; set; }
+        Home,
+        Work,
+        Other
     }
+    // public class Name
+    // {
+    //     public string Value { get; set; }
+    // }
 }
