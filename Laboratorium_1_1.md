@@ -81,7 +81,7 @@
 ![alt text](screens1/image-46.png)
 ![alt text](screens1/image-47.png)
 
-###### Wdrożenie
+## Krok 3: Zatwierdzenie i wdrożenie
 ![alt text](screens1/image-48.png)
 
 ![alt text](screens1/image-49.png)
@@ -100,3 +100,14 @@
     }
 }
 ```
+
+## Krok 4: Połączenie z bazą danych
+1. Połączenie przez SSMS
+
+![ssms](screens2/Zrzut%20ekranu%202024-10-31%20133252.png)
+![ssms_done](screens2/Zrzut%20ekranu%202024-10-31%20133521.png)
+
+2. Połączenie przez Azure Data Studio
+
+![azure ds](screens2/azure%20data%20studio.png)
+![azure ds done](screens2/azure%20data%20studio%20done.png)
