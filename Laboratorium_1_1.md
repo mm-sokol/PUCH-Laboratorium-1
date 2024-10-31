@@ -1,5 +1,5 @@
 # Laboratorium 1
-[TOC]
+
 ## Krok 1: Utworzenie konta AZURE
 - Uruchomienie wersji próbnej platformy Azure
 ![alt text](screens/image-2.png)
@@ -33,7 +33,7 @@
 
 - określenie metody uwierzytelniania
   SQL, Microsoft Entra lub obie możliwości
-  
+
   ![alt text](screens1/image-19.png)
 
 #### e. Wybór opcji cenowych i rozmiaru
