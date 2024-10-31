@@ -1,12 +1,14 @@
 # Laboratorium 1
 [TOC]
 ## Krok 1: Utworzenie konta AZURE
+- Uruchomienie wersji próbnej platformy Azure
 ![alt text](screens/image-2.png)
 
 ## Krok 2: Utworzenie instancji Azure SQL Database
 #### a. Tworzenie zasobu
 ![alt text](<screens/Zrzut ekranu z 2024-10-30 01-46-05.png>)
 
+- Wyszukanie SQL Database
 ![alt text](screens/image.png)
 
 ![alt text](screens/image-1.png)
@@ -14,15 +16,18 @@
 ![alt text](screens/image-3.png)
 
 #### b. Konfiguracja projketu
-- tworzenie **grupy zasobów**
+- tworzenie grupy zasobów
   kontenera grupującego zasoby odpowiadające jednemu środowisku
   ![alt text](screens1/image-17.png)
+
 - nazwanie bazy danych
   ![alt text](screens1/image-18.png)
 
 #### c. Konfiguracja serwera
+
 - utworzenie serwera
   ![alt text](screens/image-6.png)
+
 - określenie metody uwierzytelniania
   SQL, Microsoft Entra lub obie możliwości
   ![alt text](screens1/image-19.png)
@@ -57,7 +62,7 @@
   ![alt text](screens1/image-32.png)
 
 - Tożsamości serwera
-  Ustawienie tożsamości zarządzanai przypisanej przez system mogłoby ułatwić dostęp aplikacji do innych zasobów Azure (ożsamość zarządzana przypisana przez system pozwoli Ci na bezpieczne uwierzytelnianie bez konieczności przechowywania poświadczeń w kodzie)
+  Ustawienie tożsamości zarządzanai przypisanej przez system mogłoby ułatwić dostęp aplikacji do innych zasobów Azure (tożsamość zarządzana przypisana przez system pozwoli Ci na bezpieczne uwierzytelnianie bez konieczności przechowywania poświadczeń w kodzie)
   ![alt text](screens1/image-38.png)
 
   ![alt text](screens1/image-35.png)
@@ -107,7 +112,7 @@ dotnet add package Microsoft.EntityFrameworkCore --version 8.0.0
 dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.0
 ```
 4. Połączenie z bazą danych
-- Odnalezienie paramatrów połączeń
+- Odnalezienie paramatrów połączenia
 
 ![parametry](screens2/parametry%20po%C5%82%C4%85cze%C5%84.png)
 ```
@@ -163,6 +168,43 @@ namespace SimpleApp.Models
 }
 ```
 8. Utworzenie programu, który drukuje zawartość tabeli do konsoli
+Wymaga utworzenia obiektu kontekstu połączenia AppDbContext
+```
+var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+optionsBuilder.UseSqlServer("<parametry połączenia>");
+```
+oraz wykorzystania go do pobrania danych z tabeli do zmiennej. 
+```
+using (var context = new AppDbContext(optionsBuilder.Options))
+{
+  var products = await context.Products.ToListAsync();
 
+  Console.WriteLine("Products:");
+  Console.WriteLine("ID\tColor\tStandard Cost\tModified Date");
+  foreach (var product in products)
+  {
+      Console.WriteLine($"{product.ProductID}\t{product.Color}\t{product.StandardCost:C}\t{product.ModifiedDate:yyyy-MM-dd}");
+  }
+}
+```
+
+![alt text](screens2/image.png)
+
+## Krok 6: Konfiguracja maszyny wirtualnej
+1. Utworzenie maszyny wirtualnej
+
+![alt text](image.png)
+
+![alt text](image-1.png)
+
+![alt text](image-2.png)
+
+Zezwolenie na ruch sieciowy do portów rdp i http
+![alt text](image-3.png)
+
+![alt text](image-4.png)
+
+3. Instalacja SQL Servera
+4. Dostosowanie ustawień WindowsDefender
 
 
