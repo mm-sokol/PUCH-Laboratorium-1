@@ -1,7 +1,6 @@
-﻿// Program.cs
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore; // Required for EF Core
+using Microsoft.EntityFrameworkCore;
 
 using SimpleApp.Models;
 class Program
@@ -9,11 +8,11 @@ class Program
     static async Task Main(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-        optionsBuilder.UseSqlServer("Server=tcp:puch.database.windows.net,1433;Initial Catalog=puch_db;Persist Security Info=False;User ID=puchlab;Password=puszek4ALL2006!!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"); // Replace with your connection string
+        optionsBuilder.UseSqlServer("Server=tcp:puch.database.windows.net,1433;Initial Catalog=puch_db;Persist Security Info=False;User ID=puchlab;Password=puszek4ALL2006!!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
 
         using (var context = new AppDbContext(optionsBuilder.Options))
         {
-            var products = await context.Products.ToListAsync(); // Fetch all products
+            var products = await context.Products.ToListAsync();
 
             Console.WriteLine("Products:");
             Console.WriteLine("ID\tColor\tStandard Cost\tModified Date");

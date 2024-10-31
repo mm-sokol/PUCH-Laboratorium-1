@@ -82,24 +82,6 @@
 ![alt text](screens1/image-47.png)
 
 ## Krok 3: Zatwierdzenie i wdrożenie
-![alt text](screens1/image-48.png)
-
-![alt text](screens1/image-49.png)
-
-
-![alt text](screens1/image-50.png)
-
-![alt text](screens1/image-51.png)
-
-```
-{
-    "status": "Failed",
-    "error": {
-        "code": "RedundancyConfigurationNotAvailableInRegion",
-        "message": "The storage account failed to create due to redundancy configuration - Sku: Standard_RAGRS, Kind: StorageV2 - not available in selected Region - polandcentral. Please make sure the redundancy configuration selected is available in your region. For more information about redundancy configurations, see https://docs.microsoft.com/en-us/azure/storage/common/storage-redundancy"
-    }
-}
-```
 
 ## Krok 4: Połączenie z bazą danych
 1. Połączenie przez SSMS
@@ -117,7 +99,7 @@
 1. Instalacja .NET SDK
 2. Utworzenie szkieletu aplikacji
 ```
-dotnet new console -n AdventureStoreApp
+dotnet new console -n SimpleApp
 ```
 3. Dodanie EntityFrameworkCore i SqlSever
 ```
@@ -126,12 +108,61 @@ dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.0
 ```
 4. Połączenie z bazą danych
 - Odnalezienie paramatrów połączeń
+
 ![parametry](screens2/parametry%20po%C5%82%C4%85cze%C5%84.png)
 ```
 Server=tcp:puch.database.windows.net,1433;Initial Catalog=puch_db;Persist Security Info=False;User ID=puchlab;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;s
 ``` 
-5. Dodanie parametrów do pliku ```appsettings.json```
-6. 
+5. Stworzenie małej tabeli MyTable
+```
+CREATE TABLE [SalesLT].[MyTable] (
+    [ProductID] [int] IDENTITY(1,1) NOT NULL,
+	[Color] [nvarchar](15) NULL,
+	[StandardCost] [money] NOT NULL,
+    [ModifiedDate] [datetime] NOT NULL,
+    CONSTRAINT [PK_MyTable_ProductID] PRIMARY KEY CLUSTERED 
+    (
+        [ProductID] ASC
+    )
+);
+INSERT INTO [SalesLT].[MyTable] ([Color], [StandardCost], [ModifiedDate])
+SELECT [Color], [StandardCost], [ModifiedDate]
+FROM [SalesLT].[Product];
+```
+6. Stworzenie klasy odzwierciedlającej atrybuty tabeli
+```
+namespace SimpleApp.Models
+{
+    public class Product
+    {
+        public int ProductID { get; set; }
+        public string? Color { get; set; }
+        public decimal StandardCost { get; set; }
+        public DateTime ModifiedDate { get; set; }
+    }
+}
+```
+7. Stworzenie kontekstu połączenia z bazą danych
+```
+using Microsoft.EntityFrameworkCore;
+using SimpleApp.Models;
+
+namespace SimpleApp.Models
+{
+    public class AppDbContext : DbContext
+    {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+        public DbSet<Product> Products { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>().ToTable("MyTable", "SalesLT");
+        }
+    }
+}
+```
+8. Utworzenie programu, który drukuje zawartość tabeli do konsoli
 
 
 
