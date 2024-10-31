@@ -34,7 +34,7 @@
   Opcje liczby rdzeni i maksymalnej pamięci zostały pozostawione jako defaultowe
   ![alt text](screens1/image-22.png)
 
-  ![alt text](screens1/image-23.png)
+  <!-- ![alt text](screens1/image-23.png) -->
 
 #### f. Dodatkowe ustawienia
 ###### Ustawienia sieci
@@ -81,7 +81,7 @@
 ![alt text](screens1/image-46.png)
 ![alt text](screens1/image-47.png)
 
-
+###### Wdrożenie
 ![alt text](screens1/image-48.png)
 
 ![alt text](screens1/image-49.png)
