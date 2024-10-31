@@ -111,3 +111,26 @@
 
 ![azure ds](screens2/azure%20data%20studio.png)
 ![azure ds done](screens2/azure%20data%20studio%20done.png)
+
+
+## Krok 5: Tworzenie aplikacji
+1. Instalacja .NET SDK
+2. Utworzenie szkieletu aplikacji
+```
+dotnet new console -n AdventureStoreApp
+```
+3. Dodanie EntityFrameworkCore i SqlSever
+```
+dotnet add package Microsoft.EntityFrameworkCore --version 8.0.0
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.0
+```
+4. Połączenie z bazą danych
+- Odnalezienie paramatrów połączeń
+![parametry](screens2/parametry%20po%C5%82%C4%85cze%C5%84.png)
+```
+Server=tcp:puch.database.windows.net,1433;Initial Catalog=puch_db;Persist Security Info=False;User ID=puchlab;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;s
+``` 
+5. Dodanie parametrów do pliku ```appsettings.json```
+
+
+
