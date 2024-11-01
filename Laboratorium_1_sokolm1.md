@@ -226,3 +226,168 @@ Zezwolenie na ruch sieciowy do portów rdp i http
 4. Dostosowanie ustawień WindowsDefender
 
 
+## Krok 7: Storage Account
+1. Utworzenie konta magazynu (Storage Account)
+- Wyszukanie w portalu 'storage account'
+- Wybranie 'Konta magazynu'
+- Wybranie przycisku 'Utwórz'
+
+![alt text](image-5.png)
+
+2. Konfiguracja konta
+[CLI](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-cli)
+- Dodanie konta do grupy zasobów
+- Nazwanie konta magazynu
+- Wybór regionu: (Europe) Poland Central
+- Wybranie parametrów usługi
+  - sku (Stock Keeping Unit)
+  ```
+  az storage account create: 'LRS' is not a valid value for '--sku'. Allowed values: Standard_LRS, Standard_GRS, Standard_RAGRS, Standard_ZRS, Premium_LRS, Premium_ZRS, Standard_GZRS, Standard_RAGZRS 
+  ```
+  _LRS_ - Locally Redundant Storage
+    - Replikuje dane synchronicznie trzy razy w tym samym centrum danych w regionie podstawowym.
+    - Zapewnia najmniejszy koszt i najniższą trwałość w porównaniu do innych opcji.
+    - Chroni dane przed awariami serwerów i dysków, ale nie przed katastrofami, które dotykają całe centrum danych (np. pożar, powódź)
+
+  _ZRS_ - Zone-Redundant Storage
+   - Replikuje dane synchronicznie w trzech strefach dostępności Azure w regionie podstawowym
+   - Każda strefa dostępności to oddzielna lokalizacja fizyczna z niezależnym zasilaniem, chłodzeniem i siecią
+   - Zapewnia wyższą trwałość niż LRS, ponieważ dane są chronione przed awarią pojedynczej strefy dostępności
+
+  _GRS_ - Geo-Redundant Storage
+   - Replikuje dane synchronicznie trzy razy w regionie podstawowym (używając LRS)
+   - Następnie asynchronicznie kopiuje dane do regionu pomocniczego, oddalonego o setki kilometrów
+   - W regionie pomocniczym dane są również replikowane synchronicznie trzy razy (używając LRS)
+   - Zapewnia najwyższy poziom trwałości
+      RA-GRS (Read-Access Geo-Redundant Storage)
+      RA-GZRS (Read-Access Geo-Zone-Redundant Storage)
+
+![alt text](image-8.png)
+
+![alt text](image-9.png)
+
+```
+{
+  "accessTier": "Hot",
+  "accountMigrationInProgress": null,
+  "allowBlobPublicAccess": false,
+  "allowCrossTenantReplication": false,
+  "allowSharedKeyAccess": null,
+  "allowedCopyScope": null,
+  "azureFilesIdentityBasedAuthentication": null,
+  "blobRestoreStatus": null,
+  "creationTime": "2024-11-01T01:36:51.250595+00:00",
+  "customDomain": null,
+  "defaultToOAuthAuthentication": null,
+  "dnsEndpointType": null,
+  "enableExtendedGroups": null,
+  "enableHttpsTrafficOnly": true,
+  "enableNfsV3": null,
+  "encryption": {
+    "encryptionIdentity": null,
+    "keySource": "Microsoft.Storage",
+    "keyVaultProperties": null,
+    "requireInfrastructureEncryption": null,
+    "services": {
+      "blob": {
+        "enabled": true,
+        "keyType": "Account",
+        "lastEnabledTime": "2024-11-01T01:36:51.578626+00:00"
+      },
+      "file": {
+        "enabled": true,
+        "keyType": "Account",
+        "lastEnabledTime": "2024-11-01T01:36:51.578626+00:00"
+      },
+      "queue": null,
+      "table": null
+    }
+  },
+  "extendedLocation": null,
+  "failoverInProgress": null,
+  "geoReplicationStats": null,
+  "id": "/subscriptions/a3c39300-5bda-4650-8d3f-a2dcb45581d6/resourceGroups/puch-storage/providers/Microsoft.Storage/storageAccounts/puchstorage",
+  "identity": null,
+  "immutableStorageWithVersioning": null,
+  "isHnsEnabled": null,
+  "isLocalUserEnabled": null,
+  "isSftpEnabled": null,
+  "isSftpEnabled": null,
+  "isSkuConversionBlocked": null,
+  "keyCreationTime": {
+    "key1": "2024-11-01T01:36:51.297374+00:00",
+    "key2": "2024-11-01T01:36:51.297374+00:00"
+  },
+  "keyPolicy": null,
+  "kind": "StorageV2",
+  "largeFileSharesState": null,
+  "lastGeoFailoverTime": null,
+  "location": "polandcentral",
+  "minimumTlsVersion": "TLS1_2",
+  "name": "puchstorage",
+  "networkRuleSet": {
+    "bypass": "AzureServices",
+    "defaultAction": "Allow",
+    "ipRules": [],
+    "ipv6Rules": [],
+    "resourceAccessRules": null,
+    "virtualNetworkRules": []
+  },
+  "primaryEndpoints": {
+    "blob": "https://puchstorage.blob.core.windows.net/",
+    "dfs": "https://puchstorage.dfs.core.windows.net/",
+    "file": "https://puchstorage.file.core.windows.net/",
+    "internetEndpoints": null,
+    "microsoftEndpoints": null,
+    "queue": "https://puchstorage.queue.core.windows.net/",
+    "table": "https://puchstorage.table.core.windows.net/",
+    "web": "https://puchstorage.z36.web.core.windows.net/"
+  },
+  "primaryLocation": "polandcentral",
+  "privateEndpointConnections": [],
+  "provisioningState": "Succeeded",
+  "publicNetworkAccess": null,
+  "resourceGroup": "puch-storage",
+  "routingPreference": null,
+  "sasPolicy": null,
+  "secondaryEndpoints": null,
+  "secondaryLocation": null,
+  "sku": {
+    "name": "Standard_LRS",
+    "tier": "Standard"
+  },
+  "statusOfPrimary": "available",
+  "statusOfSecondary": null,
+  "storageAccountSkuConversionStatus": null,
+  "tags": {},
+  "type": "Microsoft.Storage/storageAccounts"
+}
+```
+3. Tworzenie tabeli 
+
+![alt text](image-11.png)
+
+![alt text](image-10.png)
+
+4. Dodanie rozszerzenia storage-preview
+
+![alt text](image-12.png)
+
+![alt text](image-13.png)
+
+5. Instalacja Storage Explorer
+
+6. Dodanie danych
+
+![alt text](image-14.png)
+
+![alt text](image-15.png)
+
+##### Pobieranie danych z C# lub inna technologia:
+1. Użyj Azure Storage SDK w aplikacji .NET.
+2. Skonfiguruj połączenie i zapytanie do Table Storage.
+3. Pobierz dane i wyświetl je w aplikacji.
+4. Obsłuż operacje CRUD 
+
+
+
