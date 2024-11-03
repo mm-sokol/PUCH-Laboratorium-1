@@ -392,7 +392,42 @@ Zezwolenie na ruch sieciowy do portów rdp i http
 
 ![alt text](image-17.png)
 
+3. Dodanie klasy reprezentującej dane w tabeli WeatherData
+```.NET
+using Azure;
+using Azure.Data.Tables;
+
+public class WeatherData : ITableEntity
+{
+    public string PartitionKey { get; set; }
+
+    public string RowKey { get; set; }
+
+    public DateTimeOffset? Timestamp { get; set; }
+
+    public ETag ETag { get; set; }
+
+    // ...
+}
+```
 3. Połączenie z kontem Azure Storage
+
+- odnalezienie klucza do konta Azure Storage
+
+![alt text](image-18.png)
+
+- zapisanie klucza Key1
+
+![alt text](image-19.png)
+
+- utworzenie wpisu w pliku ```appsettings.json```
+
+```JSON
+  "TableStorage": {
+    "ConnectionString": "...",
+    "TableName": "WeatherData"
+  }
+```
 
 4. Obsłuż operacje CRUD 
 
