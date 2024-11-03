@@ -388,9 +388,10 @@ Zezwolenie na ruch sieciowy do portów rdp i http
 
 ![alt text](image-16.png)
 
-2. Użyj Azure Storage SDK w aplikacji .NET.
+2. Dodanie pakietu obsługującego zapytania do Azure Table Storage
 
-2. Skonfiguruj połączenie i zapytanie do Table Storage.
+![alt text](image-17.png)
+
 3. Pobierz dane i wyświetl je w aplikacji.
 4. Obsłuż operacje CRUD 
 
