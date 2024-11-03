@@ -392,7 +392,8 @@ Zezwolenie na ruch sieciowy do portów rdp i http
 
 ![alt text](image-17.png)
 
-3. Pobierz dane i wyświetl je w aplikacji.
+3. Połączenie z kontem Azure Storage
+
 4. Obsłuż operacje CRUD 
 
 
