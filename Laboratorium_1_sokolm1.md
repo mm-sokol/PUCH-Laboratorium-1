@@ -384,7 +384,12 @@ Zezwolenie na ruch sieciowy do portów rdp i http
 ![alt text](image-15.png)
 
 ##### Pobieranie danych z C# lub inna technologia:
-1. Użyj Azure Storage SDK w aplikacji .NET.
+1. Stworzenie prostej aplikacji webowej w .NET 
+
+![alt text](image-16.png)
+
+2. Użyj Azure Storage SDK w aplikacji .NET.
+
 2. Skonfiguruj połączenie i zapytanie do Table Storage.
 3. Pobierz dane i wyświetl je w aplikacji.
 4. Obsłuż operacje CRUD 
