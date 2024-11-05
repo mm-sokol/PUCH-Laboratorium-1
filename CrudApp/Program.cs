@@ -48,7 +48,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
 
-
+// Creating WeatherData endpoint
 app.MapPost("/api/weather", async (WeatherData weather, TableClient tableClient) =>
 {
     try
@@ -68,6 +68,22 @@ app.MapPost("/api/weather", async (WeatherData weather, TableClient tableClient)
 })
 .WithName("InsertWeatherData")
 .WithOpenApi();
+
+
+// Reading WeatherData endpoint
+app.MapGet("/api/weather", async (TableClient tableClient) => {
+    try {
+        var weatherData = new List<WeatherData>();
+        await foreach (var entity in tableClient.QueryAsync<WeatherData>()) {
+            weatherData.Add(entity);
+        }
+
+        return Results.Ok(weatherData);
+
+    } catch (Exception ex) {
+        return Results.Problem($"Error occured while fetching data: {ex.Message}");
+    }
+}).WithName("GetWeatherData").WithOpenApi();
 
 
 
