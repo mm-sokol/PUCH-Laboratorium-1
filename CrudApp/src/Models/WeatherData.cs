@@ -5,9 +5,9 @@ namespace CrudApp.src.Models
 {
     public class WeatherData : ITableEntity
     {
-        public string PartitionKey { get; set; }
+        public required string PartitionKey { get; set; }
 
-        public string RowKey { get; set; }
+        public required string RowKey { get; set; }
 
         public DateTimeOffset? Timestamp { get; set; }
 
