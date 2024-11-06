@@ -29,9 +29,8 @@ builder.Services.AddSingleton<TableClient>(sp =>
     return tableClient;
 });
 
-
+builder.Logging.AddConsole();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
 builder.Services.Configure<HttpsRedirectionOptions>(options => {
@@ -41,30 +40,35 @@ builder.Services.Configure<HttpsRedirectionOptions>(options => {
 
 var app = builder.Build();
 
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage();
-}
-
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+}
+
 // Creating WeatherData endpoint
-app.MapPost("/api/weather", async (WeatherData weather, TableClient tableClient) =>
+app.MapPost("api/weather/{partitionKey}/{rowKey}", async (string partitionKey, string rowKey, WeatherInsertData weather, TableClient tableClient) =>
 {
     try
     {
-        if (string.IsNullOrEmpty(weather.PartitionKey))
-            weather.PartitionKey = "DefaultPartition";
-        if (string.IsNullOrEmpty(weather.RowKey))
-            weather.RowKey = Guid.NewGuid().ToString();
+        WeatherData data = new WeatherData{
+            PartitionKey = partitionKey,
+            RowKey = rowKey,
+            Timestamp = DateTimeOffset.UtcNow,
+            Temperature = weather.Temperature,
+            Humidity = weather.Humidity,
+            WindSpeed = weather.WindSpeed
+        };
 
-        await tableClient.AddEntityAsync(weather);
-        return Results.Created($"/api/weather/{weather.RowKey}", weather);
+        await tableClient.AddEntityAsync(data);
+        return Results.Created($"/api/weather/{data.PartitionKey}/{data.RowKey}", data);
     }
     catch (Exception ex)
     {
@@ -79,9 +83,12 @@ app.MapPost("/api/weather", async (WeatherData weather, TableClient tableClient)
 app.MapGet("/api/weather", async (TableClient tableClient) => {
     try {
         var weatherData = new List<WeatherData>();
-        await foreach (var entity in tableClient.QueryAsync<WeatherData>()) {
-            weatherData.Add(entity);
+        await foreach (WeatherData weather in tableClient.QueryAsync<WeatherData>())
+        {
+            Console.WriteLine($"{weather.PartitionKey}, {weather.RowKey}: temp.:{weather.Temperature}, humid.:{weather.Humidity} wind:{weather.WindSpeed}");
+            weatherData.Add(weather);
         }
+
 
         return Results.Ok(weatherData);
 
@@ -107,7 +114,7 @@ app.MapPut("api/weather/{partitionKey}/{rowKey}", async (string partitionKey, st
         if (updateData.Temperature.HasValue) {
             data.Value.Temperature = updateData.Temperature.Value;
         }
-        Console.WriteLine($"{updateData.Temperature.HasValue} -> {updateData.Temperature}");
+        // Console.WriteLine($"{updateData.Temperature.HasValue} -> {updateData.Temperature}");
 
         if (updateData.Humidity.HasValue) {
             data.Value.Humidity = updateData.Humidity.Value;
