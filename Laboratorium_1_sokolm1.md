@@ -211,19 +211,87 @@ using (var context = new AppDbContext(optionsBuilder.Options))
 ## Krok 6: Konfiguracja maszyny wirtualnej
 1. Utworzenie maszyny wirtualnej
 
-![alt text](image.png)
+![alt text](screens3/image.png)
 
-![alt text](image-1.png)
+![alt text](screens3/image-1.png)
 
-![alt text](image-2.png)
+![alt text](screens3/image-2.png)
 
 Zezwolenie na ruch sieciowy do portów rdp i http
-![alt text](image-3.png)
+![alt text](screens3/image-3.png)
 
-![alt text](image-4.png)
+![alt text](screens3/image-4.png)
 
-3. Instalacja SQL Servera
-4. Dostosowanie ustawień WindowsDefender
+<div style="padding: 10px; border: 1px solid #f5c6cb; background-color: #f8d7da; color: #721c24;">
+  <strong>Nastąpił problem z łączeniem się do maszyny wirtualnej</strong> </br>
+  Ze względu na to, że powtarzał się problem z połączeniem się przez rdp z maszyną wirtualną została ona usunięta. Podjęta została kolejna próba utworzenia maszyny wirtualnej.
+</div>
+
+
+
+3. Utworzenenie maszyny wirtualnej z SQL Server 
+
+- Wybór opcji wdrożenia 'Maszyny wirtualne SQL'
+![text](screens4/vm2.jpg)
+
+- Ustawienie odpowiedniego regionu oraz strefy dostępności
+![text](screens4/vm3.jpg)
+
+- Pozostawienie obrazu Free SQL Server Licnese
+![text](screens4/vm4.jpg)
+
+- Wybór najmniejszej dostępnej ilości pamięci
+![text](screens4/vm5.jpg)
+
+- Uzupełnienie danych konta administratora
+![text](screens4/vm6.jpg)
+
+- Ustawienie możliwości połączenia się z maszyną przez rdp i http
+![text](screens4/vm7.jpg)
+
+- Wybór typu dysku twardego maszyny wirtualnej
+![text](screens4/vm8.jpg)
+
+- Publiczny adres IP został pozostawiony pusty
+![text](screens4/vm9.jpg)
+
+- Włączono możliwość uwierzytelnienia SQL
+![text](screens4/vm10.jpg)
+
+- Podsumowanie kosztów
+![text](screens4/vm12.jpg)
+
+- Posumowanie parametrów maszyny wirtualnej
+![text](screens4/vm13.jpg)
+![text](screens4/vm14.jpg)
+
+- Niepowodzenie przy wdrażaniu
+![text](screens4/vm15.jpg)
+
+- Szczegóły błędu
+![text](screens4/vm15_error.jpg)
+
+- Sprawdzenie statusu SQL Servera po połączeniu się z maszyną wirtualną przez rdp
+![text](screens4/vm16.jpg)
+
+- Próba włączenia SQL Servera
+![text](screens4/vm17.jpg)
+
+- Błąd przy próbie włączenia SQL Servera
+![text](screens4/vm18.jpg)
+
+<div style="padding: 10px; border: 1px solid #f5c6cb; background-color: #f8d7da; color: #721c24;">
+  <strong>Błąd przy wdrożeniu SQL Servera</strong> </br>
+  Ze względu na problem przy wdrożeniu SQL Server na maszynie wirtualnej proces tworzenia został ponowiony. 
+</div>
+
+4. Utworzenie maszyny wirtualnej 
+
+- Utworzenie maszyny tym razem ponownie przez wybór zasobu 'Maszyna wirtualna'
+![alt text](image.png)
+
+4. Instalacja SQL Servera
+5. Dostosowanie ustawień WindowsDefender
 
 
 ## Krok 7: Storage Account
@@ -232,7 +300,7 @@ Zezwolenie na ruch sieciowy do portów rdp i http
 - Wybranie 'Konta magazynu'
 - Wybranie przycisku 'Utwórz'
 
-![alt text](image-5.png)
+![alt text](screens3/image-5.png)
 
 2. Konfiguracja konta
 [CLI](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-cli)
@@ -262,9 +330,9 @@ Zezwolenie na ruch sieciowy do portów rdp i http
       RA-GRS (Read-Access Geo-Redundant Storage)
       RA-GZRS (Read-Access Geo-Zone-Redundant Storage)
 
-![alt text](image-8.png)
+![alt text](screens3/image-8.png)
 
-![alt text](image-9.png)
+![alt text](screens3/image-9.png)
 
 ```
 {
@@ -365,32 +433,32 @@ Zezwolenie na ruch sieciowy do portów rdp i http
 ```
 3. Tworzenie tabeli 
 
-![alt text](image-11.png)
+![alt text](screens3/image-11.png)
 
-![alt text](image-10.png)
+![alt text](screens3/image-10.png)
 
 4. Dodanie rozszerzenia storage-preview
 
-![alt text](image-12.png)
+![alt text](screens3/image-12.png)
 
-![alt text](image-13.png)
+![alt text](screens3/image-13.png)
 
 5. Instalacja Storage Explorer
 
 6. Dodanie danych
 
-![alt text](image-14.png)
+![alt text](screens3/image-14.png)
 
-![alt text](image-15.png)
+![alt text](screens3/image-15.png)
 
 ##### Pobieranie danych z C# lub inna technologia:
 1. Stworzenie prostej aplikacji webowej w .NET 
 
-![alt text](image-16.png)
+![alt text](screens3/image-16.png)
 
 2. Dodanie pakietu obsługującego zapytania do Azure Table Storage
 
-![alt text](image-17.png)
+![alt text](screens3/image-17.png)
 
 3. Dodanie klasy reprezentującej dane w tabeli WeatherData
 ```.NET
@@ -414,11 +482,11 @@ public class WeatherData : ITableEntity
 
 - odnalezienie klucza do konta Azure Storage
 
-![alt text](image-18.png)
+![alt text](screens3/image-18.png)
 
 - zapisanie klucza Key1
 
-![alt text](image-19.png)
+![alt text](screens3/image-19.png)
 
 - utworzenie wpisu w pliku ```appsettings.json```
 
