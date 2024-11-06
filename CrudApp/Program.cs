@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Headers;
+using System;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -86,6 +89,44 @@ app.MapGet("/api/weather", async (TableClient tableClient) => {
 }).WithName("GetWeatherData").WithOpenApi();
 
 
+// Updating WeatherData endpoint
+app.MapPut("api/weather/{partitionKey}/{rowKey}", async (string partitionKey, string rowKey, WeatherUpdateData updateData, TableClient tableClient) => {
+
+    try
+    {
+        var data = await tableClient.GetEntityAsync<WeatherData>(partitionKey, rowKey);
+        if (data == null) {
+            return Results.NotFound($"No data found with given PartitionKey: {partitionKey} and RowKey: {rowKey}");
+        }
+
+        Console.WriteLine($"{data.Value.PartitionKey}, {data.Value.RowKey} Temp.:{data.Value.Temperature} Humid.:{data.Value.Humidity} Wind:{data.Value.WindSpeed}");
+        Console.WriteLine($"Update Data Temp.:{updateData.Temperature} Humid.:{updateData.Humidity} Wind:{updateData.WindSpeed}");
+
+        if (updateData.Temperature.HasValue) {
+            data.Value.Temperature = updateData.Temperature.Value;
+        }
+        Console.WriteLine($"{updateData.Temperature.HasValue} -> {updateData.Temperature}");
+
+        if (updateData.Humidity.HasValue) {
+            data.Value.Humidity = updateData.Humidity.Value;
+        }
+
+        if (updateData.WindSpeed.HasValue) {
+            data.Value.WindSpeed = updateData.WindSpeed.Value;
+        }
+
+        data.Value.Timestamp = DateTimeOffset.UtcNow;   
+
+        await tableClient.UpdateEntityAsync(data.Value, data.Value.ETag, TableUpdateMode.Merge); 
+
+        return Results.Ok(data.Value);
+    }  
+    catch (System.Exception ex)
+    {
+        return Results.Problem($"Error occured while updating data: {ex.Message}");
+    }
+
+}).WithName("UpdateWeatherData").WithOpenApi();
 
 app.MapControllers();
 

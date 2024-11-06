@@ -1,6 +1,7 @@
 /Azure_Agreement.docx
 /ExportedTemplate-.zip
+SimpleApp/obj/*
 AdventureStoreApp/obj/*
 CrudApp/obj/*
-CrudApp/appsettings.json
-
+*/appsettings.json
+*/bin/*

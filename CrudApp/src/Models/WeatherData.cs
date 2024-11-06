@@ -17,4 +17,10 @@ namespace CrudApp.src.Models
         public decimal Humidity { get; set; }
         public decimal WindSpeed { get; set; }
     }
+
+    public class WeatherUpdateData {
+        public decimal? Temperature { get; set; }
+        public decimal? Humidity { get; set; }
+        public decimal? WindSpeed { get; set; }   
+    }
 }
