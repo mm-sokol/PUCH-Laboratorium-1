@@ -134,7 +134,7 @@ dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.0
 
 ![parametry](screens2/parametry%20po%C5%82%C4%85cze%C5%84.png)
 ```
-Server=tcp:puch.database.windows.net,1433;Initial Catalog=puch_db;Persist Security Info=False;User ID=puchlab;Password={your_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;s
+Server=tcp:puch.database.windows.net,1433;Initial Catalog=puch_db;Persist Security Info=False;User ID=puchlab;Password={password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;s
 ``` 
 5. Stworzenie małej tabeli MyTable
 ```
@@ -282,16 +282,72 @@ Zezwolenie na ruch sieciowy do portów rdp i http
 
 <div style="padding: 10px; border: 1px solid #f5c6cb; background-color: #f8d7da; color: #721c24;">
   <strong>Błąd przy wdrożeniu SQL Servera</strong> </br>
-  Ze względu na problem przy wdrożeniu SQL Server na maszynie wirtualnej proces tworzenia został ponowiony. 
+  Ze względu na problem przy wdrożeniu SQL Server na maszynie wirtualnej proces tworzenia został wykonany ponownie z wykorzystaniem tutorialu.
 </div>
+
+[video](https://www.youtube.com/watch?v=iHdQmnCcaOg)
 
 4. Utworzenie maszyny wirtualnej 
 
 - Utworzenie maszyny tym razem ponownie przez wybór zasobu 'Maszyna wirtualna'
-![alt text](image.png)
+![alt text](screens6/image.png)
 
-4. Instalacja SQL Servera
-5. Dostosowanie ustawień WindowsDefender
+- Wybór grupy zasobów
+![alt text](screens6/image-1.png)
+
+- Wybór nazwy maszyny oraz regionu 
+![alt text](screens6/image-2.png)
+
+- Strefa dostępności pozostała na opcji 'Strefa 1'
+- Jako obraz maszyny pozostawiono wybór 'SQL Server 2019 Developer'
+![alt text](screens6/image-3.png)
+
+- Pozostawiono domyślny rozmiar dysku
+![alt text](screens6/image-4.png)
+
+- Uzupełniono login i hasło administratora
+- Pozostawiono możliwość połączenia się z vm przez port rdp
+- Zmieniono ustawienia dysku na wartość 'SSD Standard'
+![alt text](screens6/image-5.png)
+
+- Zabroniono połączeń przychodzących zzewnątrz 
+![alt text](screens6/image-7.png)
+
+- Ustawiono opcję 'Usuwanie publicznego adresu IP i karty sieciowej po usunięciu maszyny wirtualnej'
+
+- Opcje równoważenia obciązenia pozostały domyślne ('Brak')
+
+- Ustawiono opcje automatycznego zamykania
+![alt text](screens6/image-8.png)
+
+- Ustawona została opcja 'Łączność SQL' -> 'Publiczne (Internet)
+![alt text](screens6/image-9.png)
+
+- Włączone zostało uwierzytelnianie SQL
+![alt text](screens6/image-10.png)
+
+- Skonfigurowano magazyn wybierając 'Zmień konfigurację'
+![alt text](screens6/image-11.png)
+
+- Zmieniono typ dysku na mniejszy (16 GiB)
+![alt text](screens6/image-12.png)
+
+- Zmniejszono wielkość dysku magazynu dziennika do 16 GiB
+![alt text](screens6/image-13.png)
+
+- Wystąpił błąd związany z lokalizacją wybranego regionu
+![alt text](screens6/image-14.png)
+
+- Wyłączono opcję automatycznego zamykania, aby uzyskać pomyślną konfigurację
+![alt text](screens6/image-15.png)
+
+- Podsumowanie kosztów
+![alt text](screens6/image-16.png)
+
+- Uzyskano błąd wdrożenia
+
+![alt text](image.png)
+![alt text](image-1.png)
 
 
 ## Krok 7: Storage Account
@@ -497,7 +553,99 @@ public class WeatherData : ITableEntity
   }
 ```
 
-4. Obsłuż operacje CRUD 
+4. Obsługa operacji CRUD
+
+- Utworzona została aplikacja webowa w technologii .NET
+```
+dotnet new webapp -n CrudApp
+```
+- Należy zaimportować pakiet Azure.Data.Tables
+```
+dotnet add package Azure.Data.Tables
+```
+- Kluczowym elementem połączenia jest wskazanie parametrów połączenia w pliku appsettings.json
+```
+  "AzureTableStorage": {
+    "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=puchstorage;AccountKey=<key>;EndpointSuffix=core.windows.net",
+    "TableName": "WeatherData"
+  },
+```
+Jest on skopiowany ze strony portal.azure po wybraniu 'Konta magazynu' z listy zasobów Azure. Należy odnaleźć 'Zabezpieczenia i sieć' -> Klucze dostępu.
+
+![alt text](image-2.png)
+
+Następnie skopiować 'Parametry dostępu'
+
+![alt text](image-3.png)
+
+- Aby połączyć się z magazynem danych w kodzie muszą zostać przekazane odpowiednie argumenty z appsettings.json do obiektu TableClient z pakietu Azure.Data.Tables.
+```
+var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
+
+//...
+
+builder.Services.AddSingleton<TableClient>(sp =>
+{
+    var connectionString = configuration["AzureTableStorage:ConnectionString"];
+    var tableName = configuration["AzureTableStorage:TableName"];
+    var serviceClient = new TableServiceClient(connectionString);
+    var tableClient = serviceClient.GetTableClient(tableName);
+    tableClient.CreateIfNotExists();
+    return tableClient;
+});
+```
+- Dodany zostaje model utworzonej tabeli. Klasa ta musi implementować interfejs ITableEntity oraz uwzględniać pola PartitionKey i RowKey.
+- Po utworzeniu obiektu aplikacji dodawane są endpointy realizujące wymagane operacje
+```
+var app = builder.Build();
+// ...
+app.MapPost("api/weather/{partitionKey}/{rowKey}", async (string partitionKey, string rowKey, WeatherInsertData weather, TableClient tableClient) =>
+{
+    try
+    {
+        // ... utworzenie nowego obiektu (data) typu WeatherData 
+        // na podstawie otrzymanych danych 
+
+        await tableClient.AddEntityAsync(data); // zapisanie rekordu
+        return Results.Created($"/api/weather/{data.PartitionKey}/{data.RowKey}", data);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem($"Error occurred while inserting data: {ex.Message}");
+    }
+})
+.WithName("InsertWeatherData");
+```
+- W podobny sposób dodane są możliwości czytania danych z tabeli w postaci obiektu json (```app.MapGet("api/weather", ...)```), aktualizacji rekordów (```app.MapPut("api/weather/{partitionKey}/{rowKey}", ...)```) i usuwania rekordów (```app.MapDelete("/api/weather/{partitionKey}/{rowKey}",...)```).
+
+- Działanie zostało przetestowane przez aplikację POSTMAN. Dziełanie wymagało ustawienia nagłówka 'Content-Type' na 'application/json' oraz odznaczenia opcji weryfikcaji SSL:
+![alt text](image-9.png)
+
+  - Create
+![alt text](image-5.png) 
+
+  - Read
+![alt text](image-6.png) 
+
+  - Update 
+![alt text](image-7.png)
+
+  - Delete
+![alt text](image-8.png)
 
 
+## Azure Cosmos DB
+#### 1. Stworzenie konta Azure Codsmos DB
+- wyszukanie opcji Cosmos DB w portalu
+- wybranie opcji: 'Wypróbuj usługę Azure Cosmos DB bezpłatnie'
+- otworzenie Cosmos DB w profilu Azure
 
+![alt text](image-10.png)
+
+- zabezpieczenie konta z użyciem aplikacji MS Authenticator
+
+#### 2. Tworzenie bazy danych i kontenera
+#### 3. Dodawanie i pobieranie danych
+#### 4. Skalowanie i monitorowanie
+#### 5. Integracja z aplikacją

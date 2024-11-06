@@ -23,8 +23,6 @@ builder.Services.AddSingleton<TableClient>(sp =>
     var tableName = configuration["AzureTableStorage:TableName"];
     var serviceClient = new TableServiceClient(connectionString);
     var tableClient = serviceClient.GetTableClient(tableName);
-
-
     tableClient.CreateIfNotExists();
     return tableClient;
 });
@@ -75,8 +73,8 @@ app.MapPost("api/weather/{partitionKey}/{rowKey}", async (string partitionKey, s
         return Results.Problem($"Error occurred while inserting data: {ex.Message}");
     }
 })
-.WithName("InsertWeatherData")
-.WithOpenApi();
+.WithName("InsertWeatherData");
+
 
 
 // Reading WeatherData endpoint
@@ -95,7 +93,7 @@ app.MapGet("/api/weather", async (TableClient tableClient) => {
     } catch (Exception ex) {
         return Results.Problem($"Error occured while fetching data: {ex.Message}");
     }
-}).WithName("GetWeatherData").WithOpenApi();
+}).WithName("GetWeatherData");
 
 
 // Updating WeatherData endpoint
@@ -135,7 +133,7 @@ app.MapPut("api/weather/{partitionKey}/{rowKey}", async (string partitionKey, st
         return Results.Problem($"Error occured while updating data: {ex.Message}");
     }
 
-}).WithName("UpdateWeatherData").WithOpenApi();
+}).WithName("UpdateWeatherData");
 
 
 // Deleting WeatherData records
@@ -155,8 +153,8 @@ app.MapDelete("/api/weather/{partitionKey}/{rowKey}", async (string partitionKey
         return Results.Problem($"Error occurred while deleting data: {ex.Message}");
     }
 })
-.WithName("DeleteWeatherData")
-.WithOpenApi();
+.WithName("DeleteWeatherData");
+
 
 
 app.MapControllers();
