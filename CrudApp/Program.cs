@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Headers;
 using System;
+using Azure;
+
 
 
 
@@ -17,8 +19,8 @@ builder.Configuration["ASPNETCORE_HTTPS_PORT"] = "5050";
 
 builder.Services.AddSingleton<TableClient>(sp =>
 {
-    var connectionString = configuration["TableStorage:ConnectionString"];
-    var tableName = configuration["TableStorage:TableName"];
+    var connectionString = configuration["AzureTableStorage:ConnectionString"];
+    var tableName = configuration["AzureTableStorage:TableName"];
     var serviceClient = new TableServiceClient(connectionString);
     var tableClient = serviceClient.GetTableClient(tableName);
 
