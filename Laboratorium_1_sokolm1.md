@@ -346,8 +346,8 @@ Zezwolenie na ruch sieciowy do portów rdp i http
 
 - Uzyskano błąd wdrożenia
 
-![alt text](image.png)
-![alt text](image-1.png)
+![alt text](screens7/image.png)
+![alt text](screens7/image-1.png)
 
 
 ## Krok 7: Storage Account
@@ -572,11 +572,11 @@ dotnet add package Azure.Data.Tables
 ```
 Jest on skopiowany ze strony portal.azure po wybraniu 'Konta magazynu' z listy zasobów Azure. Należy odnaleźć 'Zabezpieczenia i sieć' -> Klucze dostępu.
 
-![alt text](image-2.png)
+![alt text](screens7/image-2.png)
 
 Następnie skopiować 'Parametry dostępu'
 
-![alt text](image-3.png)
+![alt text](screens7/image-3.png)
 
 - Aby połączyć się z magazynem danych w kodzie muszą zostać przekazane odpowiednie argumenty z appsettings.json do obiektu TableClient z pakietu Azure.Data.Tables.
 ```
@@ -620,19 +620,19 @@ app.MapPost("api/weather/{partitionKey}/{rowKey}", async (string partitionKey, s
 - W podobny sposób dodane są możliwości czytania danych z tabeli w postaci obiektu json (```app.MapGet("api/weather", ...)```), aktualizacji rekordów (```app.MapPut("api/weather/{partitionKey}/{rowKey}", ...)```) i usuwania rekordów (```app.MapDelete("/api/weather/{partitionKey}/{rowKey}",...)```).
 
 - Działanie zostało przetestowane przez aplikację POSTMAN. Dziełanie wymagało ustawienia nagłówka 'Content-Type' na 'application/json' oraz odznaczenia opcji weryfikcaji SSL:
-![alt text](image-9.png)
+![alt text](screens7/image-9.png)
 
   - Create
-![alt text](image-5.png) 
+![alt text](screens7/image-5.png) 
 
   - Read
-![alt text](image-6.png) 
+![alt text](screens7/image-6.png) 
 
   - Update 
-![alt text](image-7.png)
+![alt text](screens7/image-7.png)
 
   - Delete
-![alt text](image-8.png)
+![alt text](screens7/image-8.png)
 
 
 ## Azure Cosmos DB
@@ -641,11 +641,66 @@ app.MapPost("api/weather/{partitionKey}/{rowKey}", async (string partitionKey, s
 - wybranie opcji: 'Wypróbuj usługę Azure Cosmos DB bezpłatnie'
 - otworzenie Cosmos DB w profilu Azure
 
-![alt text](image-10.png)
+![alt text](screens7/image-10.png)
 
 - zabezpieczenie konta z użyciem aplikacji MS Authenticator
+- przy tworzeniu darmowego konta próbnego nie pojawiła się możliwość wyboru regionu, utworzone konto ma region East US
 
 #### 2. Tworzenie bazy danych i kontenera
+- połączenie z kontenerem przez Eksplorator danych
+
+- tworzenie i konfiguracja kontenera
+<!-- ![alt text](screens7/image-11.png) -->
+
+![alt text](screens7/image-14.png)
+
+<!-- ![alt text](screens7/image-15.png) -->
+![alt text](screens7/image-17.png)
+
+<!-- ![alt text](screens7/image-16.png) -->
+<!-- ![alt text](screens7/image-18.png) -->
+<!-- ![alt text](screens7/image-20.png) -->
+![alt text](screens7/image-19.png)
+
+<!-- - ustawienie RU Limit
+![alt text](screens7/image-12.png) > ![alt text](screens7/image-13.png)
+-->
+
+
 #### 3. Dodawanie i pobieranie danych
+
+- dodanie dokumentu przez Azure Data Explorer
+
+![alt text](screens7/image-21.png)
+
+![alt text](screens7/image-22.png)
+
+![alt text](screens7/image-24.png)
+
+- wykonanie zapytania w języku zapytań Cosmos DB
+
+![alt text](screens7/image-25.png)
+
+![alt text](screens7/image-26.png)
+
 #### 4. Skalowanie i monitorowanie
+
+- badanie możliwości skalowania poziomego w Cosmos DB -> modyfikacja liczby jednostek RU/s
+
+<!-- ![alt text](screens7/image-28.png) -->
+![alt text](screens7/image-29.png)
+
+<!-- ![alt text](screens7/image-27.png) -->
+![alt text](screens7/image-30.png)
+
+- wykorzystanie Azure Monitor do śledzenia wykorzystania bazy danych
+
+![alt text](screens7/image-31.png)
+
+![alt text](screens7/image-32.png)
+
 #### 5. Integracja z aplikacją
+
+- utworzenie prostej aplikacji C#
+
+- implementacja operacji CRUD na danych w CosmosDB

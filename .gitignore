@@ -4,4 +4,9 @@ SimpleApp/obj/*
 AdventureStoreApp/obj/*
 CrudApp/obj/*
 */appsettings.json
+*/appsettings.Development.json
 */bin/*
+*/obj/*
+*.zip
+*.config
+sql-dotnet/*
