@@ -128,6 +128,28 @@ app.MapPut("api/weather/{partitionKey}/{rowKey}", async (string partitionKey, st
 
 }).WithName("UpdateWeatherData").WithOpenApi();
 
+
+// Deleting WeatherData records
+app.MapDelete("/api/weather/{partitionKey}/{rowKey}", async (string partitionKey, string rowKey, TableClient tableClient) =>
+{
+    try
+    {
+        await tableClient.DeleteEntityAsync(partitionKey, rowKey);
+        return Results.NoContent();
+    }
+    catch (RequestFailedException ex) when (ex.Status == 404)
+    {
+        return Results.NotFound($"Weather data with PartitionKey '{partitionKey}' and RowKey '{rowKey}' was not found.");
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem($"Error occurred while deleting data: {ex.Message}");
+    }
+})
+.WithName("DeleteWeatherData")
+.WithOpenApi();
+
+
 app.MapControllers();
 
 app.Run();
