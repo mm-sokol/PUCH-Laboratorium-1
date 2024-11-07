@@ -1,5 +1,7 @@
 # Laboratorium 1
 
+(github)[]
+
 ## Krok 1: Utworzenie konta AZURE
 - Uruchomienie wersji próbnej platformy Azure
 ![alt text](screens/image-2.png)
