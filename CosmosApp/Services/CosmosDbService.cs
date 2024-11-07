@@ -14,15 +14,15 @@ class CosmosDBService
         container = client.GetContainer();
     }
 
-    public async Task CreateItemAsync(string id, Galaxy newGalaxy) {
+    public async Task CreateItemAsync(Galaxy newGalaxy) {
         try
         {
-            ItemResponse<Galaxy> newGalaxyResponse = await this.container.ReadItemAsync<Galaxy>(id, new PartitionKey(newGalaxy.PartitionKey));
+            ItemResponse<Galaxy> newGalaxyResponse = await this.container.ReadItemAsync<Galaxy>(newGalaxy.Id, new PartitionKey(newGalaxy.PartitionKey));
             Console.WriteLine("Item in database with id: {0} already exists\n", newGalaxyResponse.Resource.Id);
         }
         catch(CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
-            ItemResponse<Galaxy> newGalaxyResponse = await this.container.CreateItemAsync<Galaxy>(newGalaxy, new PartitionKey(id, PartitionKey));
+            ItemResponse<Galaxy> newGalaxyResponse = await this.container.CreateItemAsync<Galaxy>(newGalaxy.Id, new PartitionKey(newGalaxy.Id, newGalaxy.PartitionKey));
             Console.WriteLine("Item with id: {0} doesnt exist. Update aborted. Operation consumed {1} RUs.\n", newGalaxyResponse.Resource.Id, newGalaxyResponse.RequestCharge);
         }
     }
@@ -47,15 +47,43 @@ class CosmosDBService
         }
     }
 
-    public async UpdateItemAsync(string id, GalaxyUpdate galaxyUpdate) {
+    public async UpdateItemAsync(GalaxyUpdate galaxyUpdate) {
         try
         {
-            ItemResponse<Galaxy> galaxyToUpdate = await this.container.GetItemAsync<Galaxy>(id, new PartitionKey(newGalaxy.GalaxyId));
-            Console.WriteLine("Item with id: {0} exists\n", newGalaxyResponse.Resource.Id);
+            ItemResponse<Galaxy> galaxyToUpdate = await this.container.GetItemAsync<Galaxy>(galaxyUpdate.Id, new PartitionKey(galaxyUpdate.GalaxyId));
+            Console.WriteLine("Item with id: {0} exists\n", galaxyToUpdate.Resource.Id);
+
+            if (galaxyUpdate.name != null)
+                galaxyToUpdate.Resource.name = galaxyUpdate.name.Value;
+
+            if (galaxyUpdate.type != null)
+                galaxyToUpdate.Resource.type = galaxyUpdate.type.Value;
+
+
+            if (galaxyUpdate.otherNames != null && galaxyUpdate.otherNames.Any()  )
+                galaxyToUpdate.Resource.otherNames = galaxyToUpdate.Resource.otherNames.Concat(galaxyUpdate.otherNames.Value).Distinct().ToArray();
+
+            if (galaxyUpdate.ageMlnYr != null)
+                galaxyToUpdate.Resource.ageMlnYr = galaxyUpdate.ageMlnYr.Value;
+
+            if (galaxyUpdate.location != null)
+            {
+                if (galaxyUpdate.location.Value.constellation != null)
+                    galaxyToUpdate.Resource.location.constellation = galaxyUpdate.location.Value.constellation;
+
+                if (galaxyUpdate.location.Value.ditanceLyrs != null)
+                    galaxyToUpdate.Resource.location.ditanceLyrs = galaxyUpdate.location.Value.ditanceLyrs;
+            }
+
+            if (galaxyUpdate.stars != null)
+            {
+                
+            }
 
 
 
-
+            await container.ReplaceItemAsync(galaxyToUpdate.Resource, galaxyToUpdate.Resource.Id, new PartitionKey(galaxyToUpdate.Resource.GalaxyId));
+            Console.WriteLine("Galaxy item updated successfully!");
         }
         catch(CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
