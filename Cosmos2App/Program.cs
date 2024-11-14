@@ -97,7 +97,7 @@ app.MapPut("/galaxy/update/{id}/{pkey}" , async (string id, string pkey, [FromBo
 app.MapDelete("galaxy/delete/{id}/{pkey}", async (string id, string pkey, CosmosDbService db) => {
     bool wasDeleted = await db.DeleteGalaxyAsync(id, pkey);
     if (wasDeleted) {
-        return Results.NoContent();
+        return Results.Ok("Galaxy deleted");
     } else {
         return Results.NotFound("Galaxy not found");
     }

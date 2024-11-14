@@ -704,28 +704,88 @@ app.MapPost("api/weather/{partitionKey}/{rowKey}", async (string partitionKey, s
 #### 5. Integracja z aplikacją
 
 - utworzenie prostej aplikacji C#
+Utworzenie szkieletu aplikacji.
 ```
-dotnet 
+dotnet new webapi -n Cosmos2App 
 ```
+Dodanie 
+```
+dotnet add package Microsoft.Azure.Cosmos
+```
+Dodanie parametrów połączenia z bazą danych w pliku appsettings.json
+znalezionych w sekcji Ustawienia>Klucze konta cosmos azure, a także nazwy kontenera i bazy danych.
 
-- implementacja operacji CRUD na danych w CosmosDB
+![alt text](screens8/image-4.png)
 
-- testowanie aplikacji
+![alt text](screens8/image-5.png)
+
+```
+  "CosmosDb": {
+    "ConnectionString": "AccountEndpoint=https://<connection>db.documents.azure.com:443/;AccountKey=<key>;",
+    "DatabaseName": "CosmosAppDB",
+    "ContainerName": "puchCosmosContainer"
+  }
+```
+- implementacja operacji CRUD na danych w CosmosDB </br>
+  - Utworzenie modelu danych przechowywanych w kontenerze (Models/Galaxy.cs, Models/Star.cs ...)
+  - Utworzenie serwisu bazy danych przechowującego uchwyt do kontenera CosmosDb (Services/CosmosDbService.cs)
+  ```
+  // w konstruktorze CosmosDbService
+  this.client = new CosmosClient(connectionParams);
+  this.container = this.client.GetContainer(databaseName, containerName);
+  ```
+  - Dodanie metod realizujących operacje CRUD korzystając z metod obiektu ```container``` w klasie CosmosDbService
+  ```
+  // Creating
+  var response = await this.container.CreateItemAsync(galaxy, new PartitionKey(galaxy.GalaxyId));
+
+  // Reading 
+  var query = new QueryDefinition("SELECT * FROM c");
+  var iterator = this.container.GetItemQueryIterator<Galaxy>(query);
+  // oraz
+  var galaxyResponse = await this.container.ReadItemAsync<Galaxy>(id, new PartitionKey(partitionKey));
+
+  // Updating
+  await this.container.ReplaceItemAsync(
+                updatedGalaxy, 
+                galaxy.Id, 
+                new PartitionKey(galaxy.GalaxyId)
+            );
+
+  // Deleting
+  var galaxy = await this.container.ReadItemAsync<Galaxy>(
+                id, new PartitionKey(partitionKey)
+            );
+  ``` 
+
+  - Dodanie mapowania endpointów do funkcji, któe mają się wykonać dla przychodząceg zapytania
+  ```
+  // przykładowo...
+  app.MapPost("/galaxy" , async (Galaxy galaxy, CosmosDbService db) => {
+      await db.CreateGalaxyAsync(galaxy);
+      return Results.Created($"/galaxy/{galaxy.Id}", galaxy);
+  })
+  .WithName("PostGalaxy")
+  .WithOpenApi();
+  ```
+
+
+- testowanie aplikacji w programie POSTMAN</br>
 **Galaxy creation**
 
-![alt text](image.png)
+![alt text](screens8/image.png)
 
 **Printing galaxies**
 
-![alt text](image-1.png)
+![alt text](screens8/image-1.png)
 
 **Updating galaxy**
 
-![alt text](image-2.png)
+![alt text](screens8/image-2.png)
 
 **Deleting galaxy**
 
-![alt text](image-3.png)
+![alt text](screens8/image-6.png)
 
 
 
