@@ -67,14 +67,26 @@ app.MapPost("/galaxy" , async (Galaxy galaxy, CosmosDbService db) => {
 .WithName("PostGalaxy")
 .WithOpenApi();
 
-app.MapPut("/galaxy/update/{id}/{pkey}" , async (string id, string partitionKey, GalaxyUpdate update, CosmosDbService db) => {
-    await db.UpdateGalaxyAsync(id, partitionKey, update);
-    var galaxy = await db.GetGalaxyByIdAsync(id);
+app.MapPut("/galaxy/update/{id}/{pkey}" , async (string id, string pkey, GalaxyUpdate update, CosmosDbService db) => {
+    await db.UpdateGalaxyAsync(id, pkey, update);
+    var galaxy = await db.GetGalaxyByIdAsync(id, pkey);
     if (galaxy == null)
         return Results.NotFound("Galaxy not found");
-    return Results.Ok($"/galaxy/{galaxy.Id}", galaxy);
+    return Results.Ok(galaxy);
 })
 .WithName("UpdateGalaxy")
+.WithOpenApi();
+
+
+app.MapDelete("galaxy/delete/{id}/{pkey}", async (string id, string pkey, CosmosDbService db) => {
+    bool wasDeleted = await db.DeleteGalaxyAsync(id, pkey);
+    if (wasDeleted) {
+        return Results.NoContent();
+    } else {
+        return Results.NotFound("Galaxy not found");
+    }
+})
+.WithName("DeleteGalaxy")
 .WithOpenApi();
 
 app.Run();

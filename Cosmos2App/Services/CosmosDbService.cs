@@ -1,4 +1,5 @@
 using Microsoft.Azure.Cosmos;
+using System.Net;
 using Cosmos2App.Models;
 
 namespace Cosmos2App.Services;
@@ -53,31 +54,26 @@ public class CosmosDbService {
             );
             var galaxy = galaxyResponse.Resource;
 
-            Galaxy updatedGalaxy{
-                Id: id,
-                GalaxyId: partitionKey,
-                name: update.name ?? galaxy.name,
-                type: update.type ?? galaxy.type,
-                ageMlnYr: update.ageMlnYr ?? galaxy.ageMlnYr,
-                location: galaxy.location
+            Galaxy updatedGalaxy = new Galaxy{
+                Id = id,
+                GalaxyId = partitionKey,
+                name = update.name ?? galaxy.name,
+                type = update.type ?? galaxy.type,
+                ageMlnYr = update.ageMlnYr ?? galaxy.ageMlnYr,
+                location = galaxy.location != null ? new Location {
+                    constellation = update.location.constellation ?? galaxy.location.constellation,
+                    distanceLyrs = update.location.distanceLyrs ?? galaxy.location.distanceLyrs
+                } : galaxy.location,
+                stars = update.stars ?? galaxy.stars
             };
 
-            if (update.OtherNames != null && update.OtherNames.Any())
-                updatedGalaxy.OtherNames = update.OtherNames
-                    .Concat(galaxy.OtherNames ?? new List<string>())
+            if (update.otherNames != null && update.otherNames.Any())
+                updatedGalaxy.otherNames = update.otherNames
+                    .Concat(galaxy.otherNames != null ? galaxy.otherNames : Array.Empty<string>())
                     .Distinct()
                     .ToArray();
             else {
-                updatedGalaxy.otherNames = galaxy.OtherNames;
-            }
-
-            if (update.location != null) {
-                updatedGalaxy.location.constellation = update.location.constellation ?? galaxy.location.constellation;
-                updatedGalaxy.location.distanceLyrs = update.location.distanceLyrs ?? galaxy.location.distanceLyrs;
-            }
-
-            if (update.stars != null) {
-                updatedGalaxy.stars = update.stars;
+                updatedGalaxy.otherNames = galaxy.otherNames;
             }
 
             await this.container.ReplaceItemAsync(
@@ -106,12 +102,27 @@ public class CosmosDbService {
                 id, new PartitionKey(partitionKey)
             );
             return galaxy.Resource;
-        } catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+        } catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
             Console.WriteLine($"Galaxy with id: {id}; not found: {ex.Message}");
             return null;
         } catch (Exception ce) {
             Console.WriteLine($"Error occured while retrieving galaxy: {ce.Message}");
+            throw;
+        }
+    }
+
+
+    public async Task<bool> DeleteGalaxyAsync(string id, string partitionKey) {
+        try {
+            await this.container.DeleteItemAsync<Galaxy>(id, new PartitionKey(partitionKey));
+            return true;
+        } catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound) {
+            Console.WriteLine($"Galaxy {id} {partitionKey} to delete not found");
+            return false;
+            
+        } catch (Exception ex) {
+            Console.WriteLine($"Error occured while deleting: {ex.Message}");
             throw;
         }
     }
