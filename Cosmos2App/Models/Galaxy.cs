@@ -22,4 +22,13 @@ namespace Cosmos2App.Models
         }
     }   
 
+
+    public class GalaxyUpdate {
+        public string? name {get; set;}
+        public string? type { get; set; }
+        public string[]? otherNames { get; set; }
+        public double? ageMlnYr { get; set; }
+        public Location? location { get; set; }
+        public Star[]? stars { get; set; }
+    }  
 }

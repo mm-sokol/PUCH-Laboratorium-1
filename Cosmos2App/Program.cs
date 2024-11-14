@@ -67,9 +67,11 @@ app.MapPost("/galaxy" , async (Galaxy galaxy, CosmosDbService db) => {
 .WithName("PostGalaxy")
 .WithOpenApi();
 
-app.MapPut("/galaxy/update/{id}" , async (string id, GalaxyUpdate update, CosmosDbService db) => {
-    await db.UpdateGalaxyAsync(update);
+app.MapPut("/galaxy/update/{id}/{pkey}" , async (string id, string partitionKey, GalaxyUpdate update, CosmosDbService db) => {
+    await db.UpdateGalaxyAsync(id, partitionKey, update);
     var galaxy = await db.GetGalaxyByIdAsync(id);
+    if (galaxy == null)
+        return Results.NotFound("Galaxy not found");
     return Results.Ok($"/galaxy/{galaxy.Id}", galaxy);
 })
 .WithName("UpdateGalaxy")
