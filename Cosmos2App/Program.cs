@@ -68,10 +68,9 @@ app.MapPost("/galaxy" , async (Galaxy galaxy, CosmosDbService db) => {
 .WithOpenApi();
 
 app.MapPut("/galaxy/update/{id}" , async (string id, GalaxyUpdate update, CosmosDbService db) => {
-    try {
-        await db.UpdateGalaxyAsync();
-        return Results.Ok("Galaxy updated");
-    }
+    await db.UpdateGalaxyAsync(update);
+    var galaxy = await db.GetGalaxyByIdAsync(id);
+    return Results.Ok($"/galaxy/{galaxy.Id}", galaxy);
 })
 .WithName("UpdateGalaxy")
 .WithOpenApi();
