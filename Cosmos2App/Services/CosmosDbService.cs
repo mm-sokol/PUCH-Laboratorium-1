@@ -59,12 +59,7 @@ public class CosmosDbService {
                 GalaxyId = partitionKey,
                 name = update.name ?? galaxy.name,
                 type = update.type ?? galaxy.type,
-                ageMlnYr = update.ageMlnYr ?? galaxy.ageMlnYr,
-                location = galaxy.location != null ? new Location {
-                    constellation = update.location.constellation ?? galaxy.location.constellation,
-                    distanceLyrs = update.location.distanceLyrs ?? galaxy.location.distanceLyrs
-                } : galaxy.location,
-                stars = update.stars ?? galaxy.stars
+                ageMlnYr = update.ageMlnYr ?? galaxy.ageMlnYr
             };
 
             if (update.otherNames != null && update.otherNames.Any())
@@ -74,6 +69,23 @@ public class CosmosDbService {
                     .ToArray();
             else {
                 updatedGalaxy.otherNames = galaxy.otherNames;
+            }
+
+            if (update.stars != null) {
+                updatedGalaxy.stars = update.stars;
+            }
+            else if (galaxy.stars != null)
+            {
+                updatedGalaxy.stars = galaxy.stars;
+            }
+
+            if (update.location != null && galaxy.location != null) {
+                updatedGalaxy.location = new Location {
+                    constellation = update.location.constellation ?? galaxy.location.constellation,
+                    distanceLyrs = update.location.distanceLyrs ?? galaxy.location.distanceLyrs
+                };
+            } else if (update.location != null) {
+                updatedGalaxy.location = update.location;
             }
 
             await this.container.ReplaceItemAsync(
@@ -90,8 +102,11 @@ public class CosmosDbService {
             throw;
         }
         catch (CosmosException ce) {
-            Console.WriteLine($"Error occured while updating galaxy: {ce.Message}");
+            Console.WriteLine($"CosmosException occured while updating galaxy: {ce.Message}");
             throw;
+        }
+        catch (Exception ex) {
+            Console.WriteLine($"Error occured while updating galaxy: {ex.Message}");
         }
     }
 
@@ -105,7 +120,7 @@ public class CosmosDbService {
         } catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
             Console.WriteLine($"Galaxy with id: {id}; not found: {ex.Message}");
-            return null;
+            throw;
         } catch (Exception ce) {
             Console.WriteLine($"Error occured while retrieving galaxy: {ce.Message}");
             throw;

@@ -2,6 +2,8 @@
 using Microsoft.Azure.Cosmos;
 using Cosmos2App.Services;
 using Cosmos2App.Models;
+using Microsoft.AspNetCore.Mvc;
+
 
 
 
@@ -67,12 +69,26 @@ app.MapPost("/galaxy" , async (Galaxy galaxy, CosmosDbService db) => {
 .WithName("PostGalaxy")
 .WithOpenApi();
 
-app.MapPut("/galaxy/update/{id}/{pkey}" , async (string id, string pkey, GalaxyUpdate update, CosmosDbService db) => {
+app.MapPut("/galaxy/update/{id}/{pkey}" , async (string id, string pkey, [FromBody] GalaxyUpdate update, CosmosDbService db) => {
+
+    if (update == null)
+    {
+        throw new ArgumentNullException(nameof(update), "Update object cannot be null.");
+    }
+
+    Console.WriteLine($"Id: {id} GalaxyId: {pkey}");
+    Console.WriteLine($"{update}");
+
     await db.UpdateGalaxyAsync(id, pkey, update);
-    var galaxy = await db.GetGalaxyByIdAsync(id, pkey);
-    if (galaxy == null)
+
+    try {
+        var galaxy = await db.GetGalaxyByIdAsync(id, pkey);
+        return Results.Ok(galaxy);
+    } catch (Exception ex) {
+        Console.WriteLine($"Error occured: {ex.Message}");
         return Results.NotFound("Galaxy not found");
-    return Results.Ok(galaxy);
+    }
+
 })
 .WithName("UpdateGalaxy")
 .WithOpenApi();

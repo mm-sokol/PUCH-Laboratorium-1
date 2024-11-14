@@ -704,6 +704,9 @@ app.MapPost("api/weather/{partitionKey}/{rowKey}", async (string partitionKey, s
 #### 5. Integracja z aplikacją
 
 - utworzenie prostej aplikacji C#
+```
+dotnet 
+```
 
 - implementacja operacji CRUD na danych w CosmosDB
 
@@ -718,10 +721,11 @@ app.MapPost("api/weather/{partitionKey}/{rowKey}", async (string partitionKey, s
 
 **Updating galaxy**
 
-
+![alt text](image-2.png)
 
 **Deleting galaxy**
 
+![alt text](image-3.png)
 
 
 
