@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace CosmosApp.Models
 {
-    class Star {
+    public class Star {
         public string StarId {get; set;}
         public string name {get; set;}
         public string type {get; set;}
@@ -15,7 +15,7 @@ namespace CosmosApp.Models
         public Planet[] planets {get; set;}
     }
 
-    class StarUpdate {
+    public class StarUpdate {
         public string StarId {get; set;}
         public string? name {get; set;}
         public string? type {get; set;}

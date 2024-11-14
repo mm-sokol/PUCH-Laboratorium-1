@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 
 
-namespace CosmosApp.Models
+namespace Cosmos2App.Models
 {
     public class Coordinates {
         public string? rightAscension {get; set;}

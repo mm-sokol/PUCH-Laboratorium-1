@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace CosmosApp.Models
 {
-    class Planet {
+    public class Planet {
         public string PlanetId {get; set;}
         public string name {get; set;}
         public double masSeptKg {get; set;}
@@ -12,7 +12,7 @@ namespace CosmosApp.Models
         public int moons {get; set;}
     }
 
-    class PlanetUpdate {
+    public class PlanetUpdate {
         public string PlanetId {get; set;}
         public string? name {get; set;}
         public double? masSeptKg {get; set;}

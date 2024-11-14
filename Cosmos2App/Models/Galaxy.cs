@@ -2,14 +2,14 @@ using Newtonsoft.Json;
 
 
 
-namespace CosmosApp.Models
+namespace Cosmos2App.Models
 {
     public class Galaxy {
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public required string Id { get; set; }
 
         [JsonProperty(PropertyName = "GalaxyId")]
-        public string GalaxyId { get; set; }
+        public required string GalaxyId { get; set; }
         public string? name {get; set;}
         public string? type { get; set; }
         public string[]? otherNames { get; set; }
@@ -20,17 +20,6 @@ namespace CosmosApp.Models
         {
             return JsonConvert.SerializeObject(this);
         }
-    }
-
-    public class GalaxyUpdate {
-        public string Id { get; set; }
-        public string GalaxyId { get; set; }
-        public string? name {get; set;}
-        public string? type { get; set; }
-        public string[]? otherNames { get; set; }
-        public double? ageMlnYr { get; set; }
-        public LocationUpdate? location { get; set; }
-        public Star[]? stars { get; set; }
-        }    
+    }   
 
 }
